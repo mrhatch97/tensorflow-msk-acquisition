@@ -1,23 +1,23 @@
 function out = serialize_example(example)
-    out = "features {" + newline;
 
-    indent = sprintf('\t');
+    out = "{ ""features"": { ";
+
+    out = out + """feature"": { ";
 
     features = fieldnames(example);
 
     for idx = 1:numel(features)
-        out = out + indent + "feature { ";
-
-        out = out + "key: " + features{idx} + " ";
-        out = out + "value { ";
+        out = out + """" + features{idx} + """: { ";
 
         value = example.(features{idx});
 
         if isinteger(value)
-            out = out + "int64_list ";
+            out = out + """int64List""";
         else
-            out = out + "float_list ";
+            out = out + """floatList""";
         end
+
+        out = out + ": { ""value"": ";
 
         is_scalar = isscalar(value);
 
@@ -31,8 +31,12 @@ function out = serialize_example(example)
             out = out + "]";
         end
 
-        out = out + " } }" + newline;
+        out = out + " } }";
+
+        if idx ~= numel(features)
+            out = out + ",";
+        end
     end
 
-    out = out + "}";
+    out = out + " } } }";
 end

@@ -10,5 +10,6 @@ end
 
 examples_serialized = join(examples_serialized, newline);
 
-file = fopen('training_data.tfrec', 'w');
+file = fopen('training_data.json', 'w');
 fprintf(file, examples_serialized);
+fclose(file);
