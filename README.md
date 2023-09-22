@@ -4,10 +4,12 @@ tl;dr A neural network to detect minimum-shift keying synchronization preambles 
 symbol rate.
 
 ## Dependencies
-- Tensorflow 2
-- Keras (generally packaged with Tensorflow)
-- Python 3
-- Matplotlib (only for generating example plots of classifications)
+- [Tensorflow 2](https://www.tensorflow.org/install)
+- [Keras](https://keras.io/getting_started/) (generally packaged with Tensorflow)
+- [Python 3](https://www.python.org/downloads/)
+- [Matplotlib](https://matplotlib.org/stable/users/getting_started/) (only for generating example plots of
+  classifications)
+- [MATLAB](https://www.mathworks.com/products/matlab.html) (only for training data generation)
 
 ---
 
