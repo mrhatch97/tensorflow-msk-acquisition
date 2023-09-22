@@ -1,6 +1,8 @@
 import tensorflow as tf
 import keras
 
+from symbol_rates import symbol_rate_dict
+
 def load_parsed_dataset():
     data_shape = (1024, 1)
     scalar = (1)
@@ -21,17 +23,6 @@ def load_parsed_dataset():
     return raw_dataset.map(decode_record)
 
 def preprocess_dataset(dataset):
-    # Map symbol rate to class
-    symbol_rate_dict = {
-        0:     0,
-        4800:  1,
-        9600:  2,
-        14400: 3,
-        16000: 4,
-        19200: 5,
-        24000: 6,
-        28000: 7
-    }
     symbol_rate_lookup = tf.lookup.StaticVocabularyTable(
         tf.lookup.KeyValueTensorInitializer(
             list(symbol_rate_dict.keys()),
@@ -46,10 +37,7 @@ def preprocess_dataset(dataset):
                     'Q': example['Q']
                 },
                 {
-                    'symbol_rate':     symbol_rate_lookup.lookup(example['symbol_rate']),
-                    #'phase_offset':   example['phase_offset'],
-                    #'time_offset':    example['time_offset'],
-                    #'snr':            example['snr']
+                    'symbol_rate':     symbol_rate_lookup.lookup(example['symbol_rate'])
                 })
 
     return dataset.map(reshape_data)

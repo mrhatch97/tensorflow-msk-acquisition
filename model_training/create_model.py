@@ -2,13 +2,14 @@ import keras
 
 from dataset_management import create_datasets
 from model_definition import compiled_model
+from tensorboard_config import log_dir
 
 train_dataset, validation_dataset, test_dataset = create_datasets()
 
 model = compiled_model()
 
 tb_callback = keras.callbacks.TensorBoard(
-    log_dir="tb_logs",
+    log_dir=log_dir,
     write_images=True,
     histogram_freq=0,
     embeddings_freq=0,
