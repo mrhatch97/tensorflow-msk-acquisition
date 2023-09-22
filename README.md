@@ -14,8 +14,10 @@ symbol rate.
 ## Signal Processing Theory
 
 ### Minimum-Shift Keying
-Minimum-shift keying (MSK) is a digital modulation scheme that employs frequency shifts to convey data bits.
-One way of conceiving of the waveform is that it is a type of binary continuous-phase frequency shift keying
+[Minimum-shift keying](https://en.wikipedia.org/wiki/Minimum-shift_keying) (MSK) is a digital modulation
+scheme that employs frequency shifts to convey data bits.  One way of conceiving of the waveform is that it is
+a type of binary [continuous-phase frequency shift
+keying](https://en.wikipedia.org/wiki/Continuous_phase_modulation#Continuous-phase_frequency-shift_keying)
 (CPFSK).  This means that its symbol alphabet is size 2, with a -1 and a +1 symbol conveying a 0 bit and a 1
 bit respectively. In binary frequency-shift keying, a modulation index is chosen, which is generally a
 rational number - for example, 2/5. Modulation index is often denoted as 'h'. This 'h' represents the digital
@@ -71,8 +73,6 @@ synchronization preambles with different symbol rates. By using gradient descent
 heuristics to classify the signal, the engineering task of trying to design a DFT-based classifier and
 estimator is obviated.
 
----
-
 ## Training Data
 Training data for this project has been artificially generated with MATLAB using the scripts available in the
 `matlab` folder of the repository. Simply run `export_examples.m` to generate a dataset similar to the one
@@ -98,8 +98,6 @@ The training data is exported as a JSON-formatted Tensorflow TFRecord. Once gene
 converted to a binary TFRecord using the supplied `model_training/json_to_tfrec.py` script. This process only
 needs to be done once. The script produces a `.tfrec` file which can then be consumed by the training script.
 
----
-
 ## Model Training
 The structure of the model is defined in `model_training/model_definition.py`. It is based on the time series
 classifier presented [here](https://keras.io/examples/timeseries/timeseries_classification_from_scratch/), but
@@ -122,7 +120,5 @@ low signal-to-noise ratio cases, and the classifier can't easily overfit on nois
 
 A pre-trained model is provided in `models/model.keras`, but again, it only takes a few minutes to train a new
 model from scratch if desired.
-
----
 
 ## Results (TBD)
