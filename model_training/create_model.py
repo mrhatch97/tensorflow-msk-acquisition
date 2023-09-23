@@ -23,7 +23,7 @@ stop_callback = keras.callbacks.EarlyStopping(monitor="val_loss", patience=50, v
 
 callbacks = [tb_callback, learning_rate_callback, stop_callback]
 
-model.fit(train_dataset, epochs=15, validation_data=validation_dataset, callbacks=callbacks)
+model.fit(train_dataset, epochs=30, validation_data=validation_dataset, callbacks=callbacks)
 
 model.evaluate(test_dataset)
 

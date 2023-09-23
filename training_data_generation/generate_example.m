@@ -20,7 +20,11 @@ function example = generate_example()
         symbols_per_second = symbol_rates(randi(7));
         time_offset = round(rand * 600);
         phase_offset = rand * 2 * pi;
-        frequency_offset = 0;
+
+        min_frequency_offset = -1500;
+        max_frequency_offset = 1500;
+
+        frequency_offset = rand * (max_frequency_offset - min_frequency_offset) + min_frequency_offset;
 
         samples = single(generate_training_signal(symbols_per_second, time_offset, phase_offset, frequency_offset, snr));
 

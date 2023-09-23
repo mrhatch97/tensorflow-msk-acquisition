@@ -3,6 +3,8 @@ import keras
 
 from symbol_rates import symbol_rate_dict
 
+training_data_path = "../training_data/training_data.tfrec"
+
 def load_parsed_dataset():
     data_shape = (1024, 1)
     scalar = (1)
@@ -15,7 +17,7 @@ def load_parsed_dataset():
                 "time_offset":    tf.io.FixedLenFeature(scalar, tf.int64),
                 "snr":            tf.io.FixedLenFeature(scalar, tf.float32)};
 
-    raw_dataset = tf.data.TFRecordDataset(filenames="../training_data/training_data.tfrec")
+    raw_dataset = tf.data.TFRecordDataset(filenames=[training_data_path])
 
     def decode_record(record_bytes):
         return tf.io.parse_single_example(record_bytes, features)
@@ -37,7 +39,7 @@ def preprocess_dataset(dataset):
                     'Q': example['Q']
                 },
                 {
-                    'symbol_rate':     symbol_rate_lookup.lookup(example['symbol_rate'])
+                    'symbol_rate': symbol_rate_lookup.lookup(example['symbol_rate'])
                 })
 
     return dataset.map(reshape_data)

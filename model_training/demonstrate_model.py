@@ -2,6 +2,7 @@ import io
 import keras
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 import tensorflow as tf
 
 from datetime import datetime
@@ -26,7 +27,7 @@ def plot_to_image(figure):
     return image
 
 def generate_image_grid(model, dataset):
-    figure = plt.figure(figsize=(10,10))
+    figure = plt.figure(figsize=(10,10), layout="constrained")
 
     for index, example in dataset.enumerate():
         inputs = example[0]
@@ -39,6 +40,8 @@ def generate_image_grid(model, dataset):
 
         best_class = np.argmax(prediction, axis=-1)[0]
         best_symbol_rate = inverse_symbol_rate_dict[best_class]
+
+        confidence = prediction[0][best_class]
 
         i = inputs['I'].numpy().squeeze()
         q = inputs['Q'].numpy().squeeze()
@@ -55,22 +58,34 @@ def generate_image_grid(model, dataset):
         frequencies_kHz = np.arange(-12.8, 12.8, fft_bin_size_kHz)
 
         plt.subplot(grid_side, grid_side, index.numpy() + 1,
-                    title=f"Power Spectrum, {actual_symbol_rate} sps, prediction: {best_symbol_rate} sps")
+                    title=f"Power Spectrum, {actual_symbol_rate} sps\nPrediction: {best_symbol_rate} sps, confidence {confidence:.4f}")
         plt.plot(frequencies_kHz, fft_spectrum)
-        plt.ylabel("Power (dB)")
-        plt.xlabel("Frequency (kHz)")
+        plt.ylim(-20, 60)
         plt.xticks(np.arange(-12, 13, 2))
         plt.grid(True)
 
+    figure.suptitle("Example Outputs", fontsize=24)
+    figure.supylabel("Power (dB)", fontsize=16)
+    figure.supxlabel("Frequency (kHz)", fontsize=16)
+
     return figure
+
+if len(sys.argv) < 2:
+    print("Error: Expected path to Keras model file as first argument", file=sys.stderr)
+
+    sys.exit(2)
+
+path_to_model = sys.argv[1]
+
+model = tf.keras.models.load_model(path_to_model)
 
 output_file = log_dir + datetime.now().strftime("%Y%m%d-%H%M%S")
 
 file_writer = tf.summary.create_file_writer(output_file)
 
-model = tf.keras.models.load_model("model.keras")
+dataset = full_dataset()
 
-predict_dataset = full_dataset().shuffle(buffer_size=1024).take(n_predictions).batch(1)
+predict_dataset = dataset.shuffle(buffer_size=1024).take(n_predictions).batch(1)
 
 figure = generate_image_grid(model, predict_dataset)
 

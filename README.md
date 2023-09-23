@@ -1,4 +1,4 @@
-# Classification of Minimum-Shift Keying Signals with Tensorflow
+# MSK Symbol Rate Classification with Tensorflow
 
 tl;dr A neural network to detect minimum-shift keying synchronization preambles and decide on the received
 symbol rate.
@@ -25,8 +25,8 @@ bit respectively. In binary frequency-shift keying, a modulation index is chosen
 rational number — for example, 2/5. Modulation index is often denoted as 'h'. This 'h' represents the digital
 frequency of the symbols; for h=2/5, the symbols have a frequency of 2π radians per symbol. Given the symbol
 rate, we can then derive the physical frequency of the symbols at baseband; for h=2/5 and a symbol rate of
-5000 symbols per second, the frequency of the symbols is given by `((2 * π / 5) * 5000) / (2 * π) = 1000
-Hz`. A -1 symbol would thus be a tone at -1000 Hz, and a +1 symbol a tone at 1000 Hz.
+5000 symbols per second, the frequency of the symbols is given by `((2π / 5) * 5000) / 2π = 1000 Hz`. A -1
+symbol would thus be a tone at -1000 Hz, and a +1 symbol a tone at 1000 Hz.
 
 The 'continuous phase' portion of CPFSK simply means that the transmitter should use a single sinusoid at
 baseband and only change its frequency, rather than switching between two sinusoids of different phases and
@@ -87,8 +87,8 @@ The dataset is configured to contain 50000 examples of burst acquisition scenari
 relevant signal characteristics (phase, frequency, and time offsets, and signal-to-noise ratio, as well as the
 symbol rate). 20% of the scenarios contain only noise, to train the model to detect signal absence. The
 remaining 80% contain a uniform distribution of 7 symbol rates, with randomly generated phase offsets, time
-offsets, and a signal-to-noise ratio between -1 dB and 25 dB. These parameters can be tuned in
-`generate_example.m` as desired.
+offsets, frequency offsets between -1600 and 1600 Hz, and a signal-to-noise ratio between -1 dB and 25 dB.
+These parameters can be tuned in `generate_example.m` as desired.
 
 This data set assumes the signal is received over an AWGN channel, e.g. a satellite downlink. Due to
 resampling, the signal is lowpass-filtered, which causes the time series to distort slightly, but the primary
@@ -105,18 +105,18 @@ needs to be done once. The script produces a `.tfrec` file which can then be con
 ## Model Training
 The structure of the model is defined in `model_training/model_definition.py`. It is based on the time series
 classifier presented [here](https://keras.io/examples/timeseries/timeseries_classification_from_scratch/), but
-modified in two ways: two copies of the 3-step sub-layers are removed to simplify the model, and it is
-augmented to accept complex inputs instead of a real signal. The I and Q channels of the complex baseband
-signal are presented to the model as separate real-valued tensors; a copy of the time series classifier is
-then run on each channel separately. The results of the classifier are then combined with an averaging layer,
-and then fed into a final densely-connected layer that estimates the probability of each symbol rate. This
-architecture is shown below:
+modified in two ways: one copy of the 3-step sub-layers is removed to simplify the model, and it is augmented
+to accept complex inputs instead of a real signal. The I and Q channels of the complex baseband signal are
+presented to the model as separate real-valued tensors; a copy of the time series classifier is then run on
+each channel separately. The results of the classifier are then combined with an averaging layer, and then fed
+into a final densely-connected layer that estimates the probability of each symbol rate. This architecture is
+shown below:
 
 ![model architecture](images/model_architecture.png)
 
 The model can be trained using `model_training/create_model.py`. Since the model is quite simple, but powerful
-enough to easily handle the classification task, the training converges to virtually perfect accuracy within
-only 15 epochs. Training proceeds very quickly and can be easily done on even a fairly old desktop GPU (e.g. a
+enough to handle the classification task, the training converges to quite good accuracy within only 3 or 4
+epochs. Training proceeds relatively quickly and can be easily done on even a fairly old desktop GPU (e.g. a
 NVIDIA GTX 970). In light of how fast it is, no checkpoints are generated; instead, the model is simply saved
 at the end of the training sequence.
 
