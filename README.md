@@ -50,7 +50,9 @@ channel is in order to minimize errors.
 A variable symbol rate adds an extra variable that the receiver must solve for during acquisition; however,
 careful selection of a synchronization pattern using MSK modulation yields a synchronization preamble that
 allows all 4 variables to be solved for using a discrete Fourier Transform. A bit pattern of `1100`, repeated
-for a suitable duration, yields a signal with a unique spectral signature.
+for a suitable duration, yields a signal with a unique spectral signature, an example of which is shown below:
+
+![24000 symbol per second power spectrum](images/spectrum_24000.png)
 
 The signal contains a strong center tone at DC, with two primary sidetones offset from DC by 1/4th of the
 symbol rate in Hz; e.g. for a symbol rate of 8000 symbols per second, the first two sidetones lie at +/- 2000
