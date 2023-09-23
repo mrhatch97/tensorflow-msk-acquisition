@@ -1,4 +1,4 @@
-import keras
+import tensorflow as tf
 
 from dataset_management import create_datasets
 from model_definition import compiled_model
@@ -8,7 +8,7 @@ train_dataset, validation_dataset, test_dataset = create_datasets()
 
 model = compiled_model()
 
-tb_callback = keras.callbacks.TensorBoard(
+tb_callback = tf.keras.callbacks.TensorBoard(
     log_dir=log_dir,
     write_images=True,
     histogram_freq=0,
@@ -16,10 +16,10 @@ tb_callback = keras.callbacks.TensorBoard(
     update_freq="epoch"
 )
 
-learning_rate_callback = keras.callbacks.ReduceLROnPlateau(
+learning_rate_callback = tf.keras.callbacks.ReduceLROnPlateau(
     monitor="val_loss", factor=0.5, patience=5, min_lr=0.0001)
 
-stop_callback = keras.callbacks.EarlyStopping(monitor="val_loss", patience=15, verbose=1)
+stop_callback = tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=15, verbose=1)
 
 callbacks = [tb_callback, learning_rate_callback, stop_callback]
 

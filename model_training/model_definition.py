@@ -1,6 +1,6 @@
-import keras
+import tensorflow as tf
 
-from keras import layers
+from tensorflow.keras import layers
 
 def classifier_sublayer(prev_layer, string_id, number):
     x = layers.Conv1D(filters=16, kernel_size=64, padding="same", name=f"{string_id}_conv1d_{number}")(prev_layer)
@@ -19,8 +19,8 @@ def uncompiled_model():
 
     input_shape = (1024,1,)
 
-    i_input = keras.Input(shape=input_shape, name="I")
-    q_input = keras.Input(shape=input_shape, name="Q")
+    i_input = tf.keras.Input(shape=input_shape, name="I")
+    q_input = tf.keras.Input(shape=input_shape, name="Q")
 
     inputs = [i_input, q_input]
 
@@ -33,22 +33,22 @@ def uncompiled_model():
 
     outputs = [symbol_rate_output]
 
-    model = keras.Model(inputs=inputs, outputs=outputs)
+    model = tf.keras.Model(inputs=inputs, outputs=outputs)
 
     return model
 
 def compiled_model():
     model = uncompiled_model()
 
-    loss_fn = keras.losses.SparseCategoricalCrossentropy()
+    loss_fn = tf.keras.losses.SparseCategoricalCrossentropy()
 
     model.compile(optimizer="adam",
                   loss=[loss_fn],
-                  metrics=[keras.metrics.SparseCategoricalAccuracy()])
+                  metrics=[tf.keras.metrics.SparseCategoricalAccuracy()])
 
     return model
 
 def generate_image():
     model = uncompiled_model()
 
-    keras.utils.plot_model(model)
+    tf.keras.utils.plot_model(model)

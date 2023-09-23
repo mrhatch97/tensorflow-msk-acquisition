@@ -1,5 +1,4 @@
 import tensorflow as tf
-import keras
 
 from symbol_rates import symbol_rate_dict
 
@@ -47,8 +46,8 @@ def preprocess_dataset(dataset):
 def create_datasets():
     dataset = load_parsed_dataset()
 
-    train_dataset, test_dataset = keras.utils.split_dataset(dataset, left_size=0.7)
-    test_dataset, validation_dataset = keras.utils.split_dataset(test_dataset, left_size=0.5)
+    train_dataset, test_dataset = tf.keras.utils.split_dataset(dataset, left_size=0.7)
+    test_dataset, validation_dataset = tf.keras.utils.split_dataset(test_dataset, left_size=0.5)
 
     # For some reason we have to preprocess the dataset *after* splitting, otherwise splitting doesn't work
     train_dataset = preprocess_dataset(train_dataset).shuffle(buffer_size=1024).batch(64)
