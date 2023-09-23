@@ -126,6 +126,9 @@ does not seem to be a problem; most likely because the main impediment to classi
 noise in the low signal-to-noise ratio cases, and the classifier can't easily overfit on noise.
 
 A pre-trained model is provided in `models/model.keras`, but again, it only takes a few minutes to train a new
-model from scratch if desired.
+model from scratch to good accuracy. The pre-trained model was trained for 100 epochs and achieves an accuracy
+of around 99.9%.
 
-## Results (TBD)
+## Results
+
+![output demonstration animation](images/demonstration.gif)

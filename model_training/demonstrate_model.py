@@ -53,7 +53,9 @@ def generate_image_grid(model, dataset):
         # Convert to dB scale
         fft_spectrum = 20 * np.log10(np.fft.fftshift(fft_magnitudes))
 
-        fft_bin_size_kHz = (25600 / 1024) / 1000
+        sample_rate_Hz = 25600
+
+        fft_bin_size_kHz = (sample_rate_Hz / len(fft_exponentials)) / 1000
 
         frequencies_kHz = np.arange(-12.8, 12.8, fft_bin_size_kHz)
 
@@ -84,6 +86,8 @@ output_file = log_dir + datetime.now().strftime("%Y%m%d-%H%M%S")
 file_writer = tf.summary.create_file_writer(output_file)
 
 dataset = full_dataset()
+
+#model.evaluate(dataset.shuffle(buffer_size=1024).batch(64))
 
 predict_dataset = dataset.shuffle(buffer_size=1024).take(n_predictions).batch(1)
 

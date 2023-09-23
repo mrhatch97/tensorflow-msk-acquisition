@@ -17,13 +17,13 @@ tb_callback = keras.callbacks.TensorBoard(
 )
 
 learning_rate_callback = keras.callbacks.ReduceLROnPlateau(
-    monitor="val_loss", factor=0.5, patience=20, min_lr=0.0001)
+    monitor="val_loss", factor=0.5, patience=5, min_lr=0.0001)
 
-stop_callback = keras.callbacks.EarlyStopping(monitor="val_loss", patience=50, verbose=1)
+stop_callback = keras.callbacks.EarlyStopping(monitor="val_loss", patience=15, verbose=1)
 
 callbacks = [tb_callback, learning_rate_callback, stop_callback]
 
-model.fit(train_dataset, epochs=30, validation_data=validation_dataset, callbacks=callbacks)
+model.fit(train_dataset, epochs=100, validation_data=validation_dataset, callbacks=callbacks)
 
 model.evaluate(test_dataset)
 
