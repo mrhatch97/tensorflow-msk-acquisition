@@ -12,7 +12,7 @@ from tensorboard_config import log_dir
 
 grid_side = 2
 
-n_predictions = grid_side * grid_side
+number_of_predictions = grid_side * grid_side
 
 def plot_to_image(figure):
     # Save the plot to a PNG in memory.
@@ -54,10 +54,11 @@ def generate_image_grid(model, dataset):
         fft_spectrum = 20 * np.log10(np.fft.fftshift(fft_magnitudes))
 
         sample_rate_Hz = 25600
+        sample_rate_kHz = sample_rate_Hz / 1000
 
-        fft_bin_size_kHz = (sample_rate_Hz / len(fft_exponentials)) / 1000
+        fft_bin_size_kHz = (sample_rate_kHz / len(fft_exponentials))
 
-        frequencies_kHz = np.arange(-12.8, 12.8, fft_bin_size_kHz)
+        frequencies_kHz = np.arange(-(sample_rate_kHz / 2), (sample_rate_kHz / 2), fft_bin_size_kHz)
 
         plt.subplot(grid_side, grid_side, index.numpy() + 1,
                     title=f"Power Spectrum, {actual_symbol_rate} sps\nPrediction: {best_symbol_rate} sps, confidence {confidence:.4f}")
@@ -87,9 +88,9 @@ file_writer = tf.summary.create_file_writer(output_file)
 
 dataset = full_dataset()
 
-#model.evaluate(dataset.shuffle(buffer_size=1024).batch(64))
+model.evaluate(dataset.shuffle(buffer_size=1024).batch(64))
 
-predict_dataset = dataset.shuffle(buffer_size=1024).take(n_predictions).batch(1)
+predict_dataset = dataset.shuffle(buffer_size=1024).take(number_of_predictions).batch(1)
 
 figure = generate_image_grid(model, predict_dataset)
 

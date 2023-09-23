@@ -23,7 +23,7 @@ keying](https://en.wikipedia.org/wiki/Continuous_phase_modulation#Continuous-pha
 (CPFSK).  This means that its symbol alphabet is size 2, with a -1 and a +1 symbol conveying a 0 bit and a 1
 bit respectively. In binary frequency-shift keying, a modulation index is chosen, which is generally a
 rational number — for example, 2/5. Modulation index is often denoted as 'h'. This 'h' represents the digital
-frequency of the symbols; for h=2/5, the symbols have a frequency of 2π radians per symbol. Given the symbol
+frequency of the symbols; for h=2/5, the symbols have a frequency of 2π/5 radians per symbol. Given the symbol
 rate, we can then derive the physical frequency of the symbols at baseband; for h=2/5 and a symbol rate of
 5000 symbols per second, the frequency of the symbols is given by `((2π / 5) * 5000) / 2π = 1000 Hz`. A -1
 symbol would thus be a tone at -1000 Hz, and a +1 symbol a tone at 1000 Hz.
@@ -118,7 +118,8 @@ The model can be trained using `model_training/create_model.py`. Since the model
 enough to handle the classification task, the training converges to quite good accuracy within only 3 or 4
 epochs. Training proceeds relatively quickly and can be easily done on even a fairly old desktop GPU (e.g. a
 NVIDIA GTX 970). In light of how fast it is, no checkpoints are generated; instead, the model is simply saved
-at the end of the training sequence.
+at the end of the training sequence. Additionally, some statistics about the model training are output to a
+Tensorboard log directory `tb_logs`, allowing some inspection of the training process.
 
 The training data corpus is split along a 70/15/15 distribution, with 70% used for training. Validation is
 performed on each epoch and an evaluation is run at the end of the training process. In general, overfitting
@@ -127,8 +128,23 @@ noise in the low signal-to-noise ratio cases, and the classifier can't easily ov
 
 A pre-trained model is provided in `models/model.keras`, but again, it only takes a few minutes to train a new
 model from scratch to good accuracy. The pre-trained model was trained for 100 epochs and achieves an accuracy
-of around 99.9%.
+of around 99.9% — this took less than an hour.
 
 ## Results
 
+Some example inferences made by the pre-trained model are shown below.
+
 ![output demonstration animation](images/demonstration.gif)
+
+The model achieves better than 99% accuracy and is robust to random frequency, phase, and time offsets in the
+signal, as well as very low signal-to-noise ratios; -1 dB is around the minimum necessary to demodulate data
+with any kind of acceptable bit error rate.
+
+Computational performance is also quite good; inferences can be run on a NVIDIA GTX 970 in only 10 ms, which
+is considerably less than the 40 ms of time each input dataset represents. Thus the model could conceivably
+used in a real-time receiver. It is also only 503 kB in size, which could quite comfortably fit in the
+constrained memory of an embedded system.
+
+The script `model_training/demonstrate_model.py` was used to generate the example inferences; simply point it
+at the desired model to perform a model evaluation and generate some example outputs that can be viewed in
+Tensorboard.
