@@ -9,7 +9,7 @@ from dataset_management import full_dataset
 from symbol_rates import inverse_symbol_rate_dict
 from tensorboard_config import log_dir
 
-grid_side = 1
+grid_side = 2
 
 n_predictions = grid_side * grid_side
 

@@ -2,20 +2,15 @@ import keras
 
 from keras import layers
 
-def classify_timeseries(prev_layer):
-    x = layers.Conv1D(filters=7, kernel_size=64, padding="same")(prev_layer)
-    x = layers.BatchNormalization()(x)
-    x = layers.ReLU()(x)
+def classifier_sublayer(prev_layer, string_id, number):
+    x = layers.Conv1D(filters=7, kernel_size=64, padding="same", name=f"{string_id}_conv1d_{number}")(prev_layer)
+    x = layers.BatchNormalization(name=f"{string_id}_batch_normalization_{number}")(x)
+    return layers.ReLU(name=f"{string_id}_relu_{number}")(x)
 
-    x = layers.Conv1D(filters=7, kernel_size=64, padding="same")(prev_layer)
-    x = layers.BatchNormalization()(x)
-    x = layers.ReLU()(x)
+def classify_timeseries(prev_layer, string_id):
+    x = classifier_sublayer(prev_layer, string_id, 1)
 
-    x = layers.Conv1D(filters=7, kernel_size=64, padding="same")(prev_layer)
-    x = layers.BatchNormalization()(x)
-    x = layers.ReLU()(x)
-
-    x = layers.GlobalAveragePooling1D()(x)
+    x = layers.GlobalAveragePooling1D(name=string_id + "_global_average_pooling_1d")(x)
 
     return x
 
@@ -28,8 +23,8 @@ def uncompiled_model():
 
     inputs = [i_input, q_input]
 
-    i = classify_timeseries(i_input)
-    q = classify_timeseries(q_input)
+    i = classify_timeseries(i_input, 'I')
+    q = classify_timeseries(q_input, 'Q')
 
     combined = layers.Average()([i, q])
 
@@ -51,3 +46,8 @@ def compiled_model():
                   metrics=[keras.metrics.SparseCategoricalAccuracy()])
 
     return model
+
+def generate_image():
+    model = uncompiled_model()
+
+    keras.utils.plot_model(model)
