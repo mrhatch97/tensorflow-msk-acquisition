@@ -140,10 +140,12 @@ The model achieves better than 99% accuracy and is robust to random frequency, p
 signal, as well as very low signal-to-noise ratios; -1 dB is around the minimum necessary to demodulate data
 with any kind of acceptable bit error rate.
 
-Computational performance is also quite good; inferences can be run on a NVIDIA GTX 970 in only 10 ms, which
-is considerably less than the 40 ms of time each input dataset represents. Thus the model could conceivably
-used in a real-time receiver. It is also only 503 kB in size, which could quite comfortably fit in the
-constrained memory of an embedded system.
+Computational performance is also quite good; 64 inferences can be run on a NVIDIA GTX 970 in only 10 ms,
+which is considerably less than the 40 ms of time each input dataset represents. To simulate a more realistic
+scenario, the model was also loaded onto a NVIDIA Jetson TX2 and run; on that platform, it takes about 10 ms
+per inference. Again, this is considerably less than 40 ms. Thus the model could conceivably used in a
+real-time receiver. It is also only 503 kB in size, which could quite comfortably fit in the constrained
+memory of an embedded system.
 
 The script `model_training/demonstrate_model.py` was used to generate the example inferences; simply point it
 at the desired model to perform a model evaluation and generate some example outputs that can be viewed in
